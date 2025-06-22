@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MvcDebuggingExam.Models;
 
 namespace MvcDebuggingExam.Controllers
@@ -17,7 +17,10 @@ namespace MvcDebuggingExam.Controllers
         {
             return View(products);
         }
-
+        public IActionResult Create()
+        {
+            return View();
+        }
         public IActionResult Details(int id)
         {
             var product = products.FirstOrDefault(p => p.Id == id);
@@ -28,13 +31,10 @@ namespace MvcDebuggingExam.Controllers
             return View(product);
         }
 
-        
-        public IActionResult Create()
-        {
-            return View();
-        }
+       
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(Product product)
         {
             if (ModelState.IsValid)
@@ -79,6 +79,19 @@ namespace MvcDebuggingExam.Controllers
             return View(product);
         }
 
+        // GET: Products/Delete/5 (عرض صفحة التأكيد)
+        public IActionResult Details(int id)
+        {
+            var product = products.FirstOrDefault(p => p.Id == id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return View(product);  
+        }
+
+
+        // POST: Products/Delete/5 (عملية الحذف الفعلية)
         [HttpPost]
         public IActionResult Delete(int productId)
         {
@@ -90,6 +103,8 @@ namespace MvcDebuggingExam.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
             var product = products.FirstOrDefault(p => p.Id == id);
